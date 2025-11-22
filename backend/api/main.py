@@ -1,9 +1,17 @@
 from fastapi import FastAPI
+from backend.api import calls
+from backend.api.health import health_router
 from fastapi.middleware.cors import CORSMiddleware
 import logging
 import datetime
 
 app = FastAPI()
+
+# Include the calls router
+app.include_router(calls.router)
+
+# Include the health check router
+app.include_router(health_router)
 
 # Basic logging config
 logging.basicConfig(
@@ -26,7 +34,7 @@ async def health():
         "status": "healthy",
         "service": "urdu-voice-ai",
         "version": "0.1.0",
-        "timestamp": datetime.datetime.utcnow().isoformat()
+        "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat()
     }
 
 @app.post("/voice/webhook")
