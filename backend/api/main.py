@@ -38,6 +38,16 @@ async def health():
     }
 
 @app.post("/voice/webhook")
-async def voice_webhook():
-    logging.info("Received webhook call")
-    return {"message": "Webhook endpoint placeholder"}
+async def voice_webhook(request: Request):
+    form = await request.form()
+    caller = form.get("From")
+    logging.info(f"📞 Incoming call from {caller}")
+
+    response = VoiceResponse()
+    response.say(
+        "Welcome to Spek Voice. This is a test call. Your system is working.",
+        voice="alice",
+        language="en-US"
+    )
+
+    return Response(content=str(response), media_type="text/xml")
